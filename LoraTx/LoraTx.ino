@@ -1,28 +1,28 @@
 /******************************************************************************
-* Copyright (C) 2016, Huada Semiconductor Co.,Ltd All rights reserved.
+* Copyright (C) 2019, SIERRA SOFTWARE LTD All rights reserved.
 *
 * This software is owned and published by:
-* Huada Semiconductor Co.,Ltd ("HDSC").
+* SIERRA SOFTWARE LTD ("SSLA").
 *
 * BY DOWNLOADING, INSTALLING OR USING THIS SOFTWARE, YOU AGREE TO BE BOUND
 * BY ALL THE TERMS AND CONDITIONS OF THIS AGREEMENT.
 *
-* This software contains source code for use with HDSC
-* components. This software is licensed by HDSC to be adapted only
-* for use in systems utilizing HDSC components. HDSC shall not be
+* This software contains source code for use with SSLA
+* components. This software is licensed by SSLA to be adapted only
+* for use in systems utilizing SSLA components. SSLA shall not be
 * responsible for misuse or illegal use of this software for devices not
-* supported herein. HDSC is providing this software "AS IS" and will
+* supported herein. SSLA is providing this software "AS IS" and will
 * not be responsible for issues arising from incorrect user implementation
 * of the software.
 *
 * Disclaimer:
-* HDSC MAKES NO WARRANTY, EXPRESS OR IMPLIED, ARISING BY LAW OR OTHERWISE,
+* SSLA MAKES NO WARRANTY, EXPRESS OR IMPLIED, ARISING BY LAW OR OTHERWISE,
 * REGARDING THE SOFTWARE (INCLUDING ANY ACOOMPANYING WRITTEN MATERIALS),
 * ITS PERFORMANCE OR SUITABILITY FOR YOUR INTENDED USE, INCLUDING,
 * WITHOUT LIMITATION, THE IMPLIED WARRANTY OF MERCHANTABILITY, THE IMPLIED
 * WARRANTY OF FITNESS FOR A PARTICULAR PURPOSE OR USE, AND THE IMPLIED
 * WARRANTY OF NONINFRINGEMENT.
-* HDSC SHALL HAVE NO LIABILITY (WHETHER IN CONTRACT, WARRANTY, TORT,
+* SSLA SHALL HAVE NO LIABILITY (WHETHER IN CONTRACT, WARRANTY, TORT,
 * NEGLIGENCE OR OTHERWISE) FOR ANY DAMAGES WHATSOEVER (INCLUDING, WITHOUT
 * LIMITATION, DAMAGES FOR LOSS OF BUSINESS PROFITS, BUSINESS INTERRUPTION,
 * LOSS OF BUSINESS INFORMATION, OR OTHER PECUNIARY LOSS) ARISING FROM USE OR
@@ -45,7 +45,7 @@
  ** A detailed description is available at
  ** @link Sample Group Some description @endlink
  **
- **   - 2016-02-16  1.0  XYZ First version for Device Driver Library of Module.
+ **   - 2019-12-18  1.0  XYZ First version for Device Driver Library of Module.
  **
  ******************************************************************************/
 
@@ -94,10 +94,10 @@
  ******************************************************************************/
 byte str[LEN] = {'H','o','p','e','R','F',' ','R','F','M',' ','C','O','B','R','F','M','9','5','W','A','+','+','+'};
 byte getstr[LEN];
-byte mode = RX_MODE;	
+byte mode = RX_MODE;
 const byte app_syncword[] = { 0x2D, 0xD4, 0x56, 0x78, 0x9A, 0xBC, 0xDE, 0xF0 } ;
 
-	
+
 /**
  ******************************************************************************
  ** \brief  Main function of project
@@ -112,7 +112,7 @@ void setup(void)
 	byte i;
 
 	//KEY_SET_IN();			//for select work mode
-	
+
 	Modulation	 = LORA;
 	COB			 = RFM95;
 	Frequency 	 = 866000;
@@ -121,7 +121,7 @@ void setup(void)
 	FixedPktLength = true;		   //explicit header mode for LoRa
 	PayloadLength  = 24;
 	CrcDisable	 = true ;
-	
+
 	//for LORA parameter
 	SFSel 		 = SF9;
 	BWSel 		 = BW125K;
@@ -139,7 +139,7 @@ void setup(void)
 	vInitialize();
 
 	vGoRx();
-	
+
 	Serial.begin(115200);
 	//_delay_ms(3000);
 
@@ -152,7 +152,7 @@ void loop(void)
 {
 	//static byte last_mode=RX_MODE;
 	byte tmp;
-	
+
 //	if(KEY_READ()==0){
 //		_delay_ms(10);
 //		if(KEY_READ()==0){
@@ -161,7 +161,7 @@ void loop(void)
 //		Serial.println("Key press enough,release the key");
 //		while(KEY_READ()==0);
 //	}
-	
+
 //	if(last_mode != mode){
 //		//change mode
 //		switch(mode){
@@ -175,8 +175,8 @@ void loop(void)
 //				last_mode = mode;
 //				vGoRx();
 //				break;
-//		}	
-//	}		
+//		}
+//	}
 	switch(mode){
 		case TX_MODE:
 			bSendMessage(str, 26);
@@ -190,8 +190,8 @@ void loop(void)
 			   Serial.print("Got message: ");
 			   Serial.write(getstr,tmp);
 			   Serial.print("\r\n");
-			   //do someting 
-   			}  
+			   //do someting
+   			}
 			break;
 	}
 }

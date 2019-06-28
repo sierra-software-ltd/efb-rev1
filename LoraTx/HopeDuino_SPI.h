@@ -1,35 +1,33 @@
 /*
- * THE FOLLOWING FIRMWARE IS PROVIDED: 
- *  (1) "AS IS" WITH NO WARRANTY; 
+ * THE FOLLOWING FIRMWARE IS PROVIDED:
+ *  (1) "AS IS" WITH NO WARRANTY;
  *  (2) TO ENABLE ACCESS TO CODING INFORMATION TO GUIDE AND FACILITATE CUSTOMER.
  * CONSEQUENTLY, HopeRF SHALL NOT BE HELD LIABLE FOR ANY DIRECT, INDIRECT OR
  * CONSEQUENTIAL DAMAGES WITH RESPECT TO ANY CLAIMS ARISING FROM THE CONTENT
  * OF SUCH FIRMWARE AND/OR THE USE MADE BY CUSTOMERS OF THE CODING INFORMATION
  * CONTAINED HEREIN IN CONNECTION WITH THEIR PRODUCTS.
- * 
- * Copyright (C) HopeRF 
  *
- * website: www.HopeRF.com
- *          www.HopeRF.cn    
+ * Copyright (C) HopeRF
+ *
+ * website: www.ssla.co.uk
+ *          www.ssla.co.uk
  */
 
-/*! 
+/*!
  * file       HopeDuino_SPI.cpp
  * brief      for HopeRF's EVB to use Hardware SPI
  * hardware   HopeRF's EVB
- *            
  *
- * version    1.1
- * date       Jan 15 2015
- * author     QY Ruan
+ *
+ * version    1.3
+ * date       Feb 20 2019
+ * author     Nick
  */
 
 
 #ifndef HopeDuino_SPI_h
 #define HopeDuino_SPI_h
 
-//#include <util/delay.h>
-//#include <avr/io.h>
 #include "Arduino.h"
 #include <SPI.h>
 
@@ -55,16 +53,16 @@
 //#define DIO2 		    6
 //#define DIO1			7
 //#define DIO0			8
-//#define MISO			12	
+//#define MISO			12
 //#define MOSI			11
-//#define SCK			    13	
+//#define SCK			    13
 //#define nCS			    10
 //#define RESET		    9
 
 #define SOFT_SPI_nSS_DIRSET()      pinMode(nCS,OUTPUT)
 #define SetnSS()				   digitalWrite(nCS,HIGH)
 #define ClrnSS()				   digitalWrite(nCS,LOW)
-	
+
 #define SOFT_SPI_MISO_DIRSET()     pinMode(MISO,INPUT)
 #define SOFT_SPI_MISO_PULLUP_SET() digitalWrite(MISO,HIGH)
 #define SOFT_SPI_MISO_READ()       digitalRead(MISO)
@@ -78,7 +76,7 @@
 #define SOFT_SPI_SCK_LO()          digitalWrite(SCK,LOW)
 
 
-void vSpiInit(void);				/** initialize hardware SPI config, SPI_CLK = Fcpu/4 **/	
+void vSpiInit(void);				/** initialize hardware SPI config, SPI_CLK = Fcpu/4 **/
 void vSpiWrite(word dat);			/** SPI send one word **/
 byte bSpiRead(byte addr);			/** SPI read one byte **/
 void vSpiBurstWrite(byte addr, byte ptr[], byte length);	/** SPI burst send N byte **/

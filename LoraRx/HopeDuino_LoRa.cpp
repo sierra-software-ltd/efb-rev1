@@ -1,48 +1,48 @@
 /*
- * THE FOLLOWING FIRMWARE IS PROVIDED: 
- *  (1) "AS IS" WITH NO WARRANTY; 
+ * THE FOLLOWING FIRMWARE IS PROVIDED:
+ *  (1) "AS IS" WITH NO WARRANTY;
  *  (2) TO ENABLE ACCESS TO CODING INFORMATION TO GUIDE AND FACILITATE CUSTOMER.
  * CONSEQUENTLY, HopeRF SHALL NOT BE HELD LIABLE FOR ANY DIRECT, INDIRECT OR
  * CONSEQUENTIAL DAMAGES WITH RESPECT TO ANY CLAIMS ARISING FROM THE CONTENT
  * OF SUCH FIRMWARE AND/OR THE USE MADE BY CUSTOMERS OF THE CODING INFORMATION
  * CONTAINED HEREIN IN CONNECTION WITH THEIR PRODUCTS.
- * 
- * Copyright (C) HopeRF
  *
- * website: www.HopeRF.com
- *          www.HopeRF.cn   
+ * Copyright (C) SSLA
+ *
+ * website: www.sla.co.uk
+ *          www.sla.co.uk
  */
 
-/*! 
+/*!
  * file       HopeDuino_LoRa.cpp
  * brief      driver for RFM92/95/96/98
- * hardware   HopeRF's RFduino TRx & with HopeRF's LoRa COB rf-module  
- *            
+ * hardware   HopeRF's RFduino TRx & with HopeRF's LoRa COB rf-module
  *
- * version    1.0
- * date       Jun 3 2014
- * author     QY Ruan
+ *
+ * version    1.3
+ * date       Jun 23 2019
+ * author     Nick
  */
 
 #include "HopeDuino_LoRa.h"
 
-/********************************************************** 
-**RF69 Regsister define                                      
-**********************************************************/ 
+/**********************************************************
+**RF69 Regsister define
+**********************************************************/
 //Common Regsister
-#define 	RegFifo 			0x00 
-#define 	RegOpMode 			0x01 
-#define 	RegFrMsb 			0x06 
-#define 	RegFrMid 			0x07 
+#define 	RegFifo 			0x00
+#define 	RegOpMode 			0x01
+#define 	RegFrMsb 			0x06
+#define 	RegFrMid 			0x07
 #define 	RegFrLsb 			0x08
 #define		RegPaConfig			0x09
-#define 	RegPaRamp 			0x0A 
+#define 	RegPaRamp 			0x0A
 #define 	RegOcp 			    0x0B
-#define 	RegLna 			    0x0C 
+#define 	RegLna 			    0x0C
 
-#define 	RegDioMapping1 	    0x40 
-#define 	RegDioMapping2 	    0x41 
-#define 	RegVersion 		    0x42 
+#define 	RegDioMapping1 	    0x40
+#define 	RegDioMapping2 	    0x41
+#define 	RegVersion 		    0x42
 
 //for 6/7/8
 #define		RegPllHop			0x44
@@ -71,47 +71,47 @@
 
 //ASK/FSK/GFSK Regsister
 #define 	RegBitrateMsb 		0x02
-#define 	RegBitrateLsb 		0x03 
-#define 	RegFdevMsb 		    0x04 
-#define 	RegFdevLsb 		    0x05 
+#define 	RegBitrateLsb 		0x03
+#define 	RegFdevMsb 		    0x04
+#define 	RegFdevLsb 		    0x05
 
 #define		RegRxConfig			0x0D
 #define 	RegRssiConfig 		0x0E
 #define		RegRssiCollision	0x0F
-#define 	RegRssiThresh 		0x10 
+#define 	RegRssiThresh 		0x10
 #define 	RegRssiValue 		0x11
 #define 	RegRxBw 			0x12
 #define 	RegAfcBw 			0x13
-#define 	RegOokPeak 		    0x14 
-#define 	RegOokFix 			0x15 
-#define 	RegOokAvg 			0x16  
+#define 	RegOokPeak 		    0x14
+#define 	RegOokFix 			0x15
+#define 	RegOokAvg 			0x16
 #define 	RegAfcFei 			0x1A
 #define 	RegAfcMsb 			0x1B
-#define 	RegAfcLsb 			0x1C 
+#define 	RegAfcLsb 			0x1C
 #define 	RegFeiMsb 			0x1D
-#define 	RegFeiLsb 			0x1E 
+#define 	RegFeiLsb 			0x1E
 #define		RegPreambleDetect	0x1F
-#define 	RegRxTimeout1 		0x20 
-#define 	RegRxTimeout2 		0x21 
-#define 	RegRxTimeout3 		0x22 
+#define 	RegRxTimeout1 		0x20
+#define 	RegRxTimeout2 		0x21
+#define 	RegRxTimeout3 		0x22
 #define		RegRxDelay			0x23
 #define 	RegOsc 				0x24
-#define 	RegPreambleMsb 	    0x25 
-#define 	RegPreambleLsb 	    0x26 
+#define 	RegPreambleMsb 	    0x25
+#define 	RegPreambleLsb 	    0x26
 #define 	RegSyncConfig 		0x27
-#define 	RegSyncValue1		0x28 
-#define 	RegSyncValue2       0x29 
-#define 	RegSyncValue3       0x2A 
-#define 	RegSyncValue4       0x2B 
-#define 	RegSyncValue5       0x2C 
-#define 	RegSyncValue6       0x2D 
-#define 	RegSyncValue7       0x2E 
+#define 	RegSyncValue1		0x28
+#define 	RegSyncValue2       0x29
+#define 	RegSyncValue3       0x2A
+#define 	RegSyncValue4       0x2B
+#define 	RegSyncValue5       0x2C
+#define 	RegSyncValue6       0x2D
+#define 	RegSyncValue7       0x2E
 #define 	RegSyncValue8       0x2F
-#define 	RegPacketConfig1 	0x30 
-#define 	RegPacketConfig2 	0x31 
-#define 	RegPayloadLength 	0x32 
-#define 	RegNodeAdrs 		0x33 
-#define 	RegBroadcastAdrs 	0x34 
+#define 	RegPacketConfig1 	0x30
+#define 	RegPacketConfig2 	0x31
+#define 	RegPayloadLength 	0x32
+#define 	RegNodeAdrs 		0x33
+#define 	RegBroadcastAdrs 	0x34
 #define 	RegFifoThresh 		0x35
 #define		RegSeqConfig1		0x36
 #define		RegSeqConfig2		0x37
@@ -129,13 +129,13 @@
 #define		RegFifoAddrPtr				0x0D
 #define 	RegFifoTxBaseAddr			0x0E
 #define		RegFifoRxBaseAddr			0x0F
-#define 	RegFifoRxCurrentAddr		0x10 
+#define 	RegFifoRxCurrentAddr		0x10
 #define 	RegIrqFlagsMask				0x11
 #define 	RegIrqFlags					0x12
 #define 	RegRxNbBytes				0x13
-#define 	RegRxHeaderCntValueMsb    	0x14 
-#define 	RegRxHeaderCntValueLsb		0x15 
-#define 	RegRxPacketCntValueMsb		0x16  
+#define 	RegRxHeaderCntValueMsb    	0x14
+#define 	RegRxHeaderCntValueLsb		0x15
+#define 	RegRxPacketCntValueMsb		0x16
 #define 	RegRxPacketCntValueLsb		0x17
 #define 	RegModemStat				0x18
 #define 	RegPktSnrValue				0x19
@@ -155,16 +155,16 @@
 
 
 
-/**********************************************************      
-**RF69 mode status                                          
-**********************************************************/      
+/**********************************************************
+**RF69 mode status
+**********************************************************/
 #define		RADIO_SLEEP			(0x00)
 #define		RADIO_STANDBY		(0x01)
 #define		RADIO_TX			(0x03)
 #define		RADIO_RX			(0x05)
 
 #define		FskMode				(0<<5)
-#define		OokMode				(1<<5) 
+#define		OokMode				(1<<5)
 
 #define		Shaping				2
 
@@ -184,7 +184,7 @@
 
 #define		AUTO_RST_RX_OFF		(0<<6)
 #define		AUTO_RST_RX_ON		(1<<6)
-#define		AUTO_RST_RX_ONwPLL	(2<<6)	
+#define		AUTO_RST_RX_ONwPLL	(2<<6)
 #define		SYNC_ON				(1<<4)
 
 //for PacketConfig
@@ -220,7 +220,7 @@ moduleType COB;								//Chip on board
 
 //common parameter
 lword Frequency;							//unit: KHz
-byte  OutputPower;							//unit: dBm   range: 2-20 [2dBm~+20dBm] 
+byte  OutputPower;							//unit: dBm   range: 2-20 [2dBm~+20dBm]
 word  PreambleLength;						//unit: byte
 
 byte  FixedPktLength;						//OOK/FSK/GFSK:
@@ -236,7 +236,7 @@ byte  CrcDisable;							//OOK/FSK/GFSK:
 										//LoRa:
 										//		true-------Header indicates CRC off
 										//		false------Header indicates CRC on
-byte  PayloadLength;						//PayloadLength is need to be set a value, when FixedPktLength is true. 		
+byte  PayloadLength;						//PayloadLength is need to be set a value, when FixedPktLength is true.
 
 
 //for OOK/FSK/GFSK parameter
@@ -272,12 +272,12 @@ void vInitialize(void)
  PORIn();
  DIO0In();
  vSpiInit();									//init port
- 						
+
  FrequencyValue.Freq = (Frequency<<11)/125;			//calc frequency
  BitRateValue  = (SymbolTime<<5)/1000;				//calc bitrate
  DevationValue = (Devation<<11)/125;				//calc deviation
- BandWidthValue = bSelectBandwidth(BandWidth);	
- 
+ BandWidthValue = bSelectBandwidth(BandWidth);
+
  switch(SFSel)
  	{
  	case SF6:  SFValue = 6; break;
@@ -286,7 +286,7 @@ void vInitialize(void)
  	case SF10: SFValue = 10;break;
  	case SF11: SFValue = 11;break;
  	case SF12: SFValue = 12;break;
- 	case SF9:  
+ 	case SF9:
  	default:   SFValue = 9; break;
  	}
  switch(BWSel)
@@ -294,7 +294,7 @@ void vInitialize(void)
  	case BW62K:  BWValue = 6; break;				//for RFM95/96/97/98
  	case BW250K: BWValue = 8; break;
  	case BW500K: BWValue = 9; break;
- 	case BW125K: 
+ 	case BW125K:
  	default:     BWValue = 7; break;
  	}
  switch(CRSel)
@@ -305,12 +305,12 @@ void vInitialize(void)
  	case CR4_7: CRValue = 3; break;
  	case CR4_8: CRValue = 4; break;
  	}
- 
- if((SFValue-4)>=BWValue)	
- 	RsOptimize = true;	
+
+ if((SFValue-4)>=BWValue)
+ 	RsOptimize = true;
  else
- 	RsOptimize = false;								
- 	
+ 	RsOptimize = false;
+
  vConfig();
  vGoStandby();
 }
@@ -325,7 +325,7 @@ void vConfig(void)
 {
  byte i, j;
  byte sync;
- 
+
  vReset();
  vGoStandby();
 
@@ -364,13 +364,13 @@ void vConfig(void)
  //vSpiWrite(((word)RegLna<<8)+0x20);		//High & LNA Enable
 
 
- 
+
  // Mode
  i = bSpiRead(RegOpMode);
  j = bSpiRead(RegPaRamp);		//for RFM95/96/97/98
  if(Modulation==LORA)
  	{
- 	i &= 0x87;	
+ 	i &= 0x87;
 	switch(COB)
 		{
 		case RFM96:
@@ -383,7 +383,7 @@ void vConfig(void)
 	i &= 0xF8;
 	if(SFSel==SF6)
 		{
-		i |= 0x05; 
+		i |= 0x05;
 		vSpiWrite(0x3100+i);
 		vSpiWrite(0x3700+0x0C);
 		FixedPktLength = true;			//SF6 must be ImplicitHeaderMode
@@ -406,7 +406,7 @@ void vConfig(void)
 			tmp <<= 6;					//BandWidth
 			tmp |= (CRValue<<3);
 			if(FixedPktLength)			//ImplicitHeader
-				tmp |= 0x04;			
+				tmp |= 0x04;
 			if(!CrcDisable)				//
 				tmp |= 0x02;
 			if(RsOptimize)				//mandated for when the symbol length exceeds 16ms
@@ -436,7 +436,7 @@ void vConfig(void)
 			vSpiWrite(((word)RegModemConfig3<<8)+tmp);
 			break;
 		}
- 	vSpiWrite(((word)RegSymbTimeoutLsb<<8)+0xFF);	//RegSymbTimeoutLsb Timeout = 0x3FF(Max)	
+ 	vSpiWrite(((word)RegSymbTimeoutLsb<<8)+0xFF);	//RegSymbTimeoutLsb Timeout = 0x3FF(Max)
  	vSpiWrite(((word)RegPreambleMsb_LR<<8)+(byte)(PreambleLength>>8));
  	vSpiWrite(((word)RegPreambleLsb_LR<<8)+(byte)PreambleLength);
 
@@ -448,55 +448,55 @@ void vConfig(void)
 		{
 		case RFM92:
 		case RFM93:
-			i &= MOUDLE_MASK_2; 
+			i &= MOUDLE_MASK_2;
  			switch(Modulation)
  				{
  				case OOK:  i |= OokMode+(Shaping<<3); break;
  				case GFSK: i |= FskMode+(Shaping<<3); break;
  				case FSK:
  				default:   i |= FskMode; break;
- 				}			
+ 				}
 			break;
 		default:
-			i &= MOUDLE_MASK_1; 
+			i &= MOUDLE_MASK_1;
 			j &= 0x9F;
 			switch(Modulation)
  				{
  				case OOK:  i |= OokMode; j |= (Shaping<<5); break;
  				case GFSK: i |= FskMode; j |= (Shaping<<5); break;
- 				case FSK: 
+ 				case FSK:
  				default:   i |= FskMode; break;
- 				}			
+ 				}
 			break;
 		}
  	vSpiWrite(((word)RegOpMode<<8)+i);
  	vSpiWrite(((word)RegPaRamp<<8)+j);
 
- 	//BitRate 
+ 	//BitRate
  	vSpiWrite(((word)RegBitrateMsb<<8)+(byte)(BitRateValue>>8));
  	vSpiWrite(((word)RegBitrateLsb<<8)+(byte)BitRateValue);
- 
+
 	//Devation
  	vSpiWrite(((word)RegFdevMsb<<8)+(((byte)(DevationValue>>8))&0x3F));
- 	vSpiWrite(((word)RegFdevLsb<<8)+(byte)(DevationValue&0xFF)); 	
- 	
+ 	vSpiWrite(((word)RegFdevLsb<<8)+(byte)(DevationValue&0xFF));
+
  	//RxConfig
  	vSpiWrite(((word)RegRxConfig<<8)+AGC_ON+RX_TRIGGER);
- 	
+
  	//RxBw
- 	vSpiWrite(((word)RegRxBw<<8)+BandWidthValue);	
- 	
+ 	vSpiWrite(((word)RegRxBw<<8)+BandWidthValue);
+
  	//OOK
  	vSpiWrite(((word)RegOokPeak<<8)+0x20+(0x02<<3)+0x00);
- 	
+
  	//PreambleDetect
  	vSpiWrite(((word)RegPreambleDetect<<8)+PREAMBLE_DECT_ON+PREAMBLE_DECT_3BYTE);
  	vSpiWrite(((word)RegPreambleMsb<<8)+(byte)(PreambleLength>>8));
  	vSpiWrite(((word)RegPreambleLsb<<8)+(byte)PreambleLength);
- 	
+
  	//Osc
  	vSpiWrite(((word)RegOsc<<8)+0x07);			//Close OscClk Output
- 
+
  	//SyncConfig
  	if(SyncLength==0)
  		sync = 0;
@@ -504,21 +504,21 @@ void vConfig(void)
  		sync = SyncLength-1;
  	vSpiWrite(((word)RegSyncConfig<<8)+AUTO_RST_RX_ONwPLL+SYNC_ON+(sync&0x07));
  	for(i=0;i<8;i++)								//SyncWordSetting
- 		vSpiWrite(((word)(RegSyncValue1+i)<<8)+SyncWord[i]);	
- 	
+ 		vSpiWrite(((word)(RegSyncValue1+i)<<8)+SyncWord[i]);
+
  	i = DcFree_NRZ + AddrFilter_NONE + CrcCalc_CCITT;
  	if(!FixedPktLength)
  		i += VariablePacket;
  	if(!CrcDisable)
  		i += CrcOn;
- 	vSpiWrite(((word)RegPacketConfig1<<8)+i);		
- 	vSpiWrite(((word)RegPacketConfig2<<8)+PacketMode);		
+ 	vSpiWrite(((word)RegPacketConfig1<<8)+i);
+ 	vSpiWrite(((word)RegPacketConfig2<<8)+PacketMode);
 
  	if(FixedPktLength)								//Set Packet length
  		vSpiWrite(((word)RegPayloadLength<<8)+PayloadLength);
- 	else	
- 		vSpiWrite(((word)RegPayloadLength<<8)+0xFF); 	
- 	
+ 	else
+ 		vSpiWrite(((word)RegPayloadLength<<8)+0xFF);
+
  	vSpiWrite(((word)RegFifoThresh<<8)+0x01);
  	vSpiWrite(((word)RegDioMapping2<<8)+0x61);	//DIO4 PllLock / DIO5 Data / PreambleDetect
 	}
@@ -535,24 +535,24 @@ void vGoRx(void)
  byte tmp;
  if(Modulation==LORA)
  	{
- 	if(FixedPktLength)									//Set Packet length 	
+ 	if(FixedPktLength)									//Set Packet length
  		vSpiWrite(((word)RegPayloadLength_LR<<8)+PayloadLength);
- 	else	
- 		vSpiWrite(((word)RegPayloadLength_LR<<8)+0xFF); 
+ 	else
+ 		vSpiWrite(((word)RegPayloadLength_LR<<8)+0xFF);
 
  	vSpiWrite(((word)RegDioMapping1<<8)+0x22);		//DIO0 RxDone / DIO1 CadDetected / DIO2 FhssChangeChannel /DIO3 PayloadCrcError
  	vSpiWrite(((word)RegIrqFlags<<8)+AllIrqMask);	//Clear All Interrupt
  	vSpiWrite(((word)RegIrqFlagsMask<<8)+(AllIrqMask&(~(RxDoneMask|RxTimeoutMask))));	//just enable RxDone & Timeout
- 	
+
  	tmp = bSpiRead(RegFifoRxBaseAddr);				//Read RxBaseAddr
  	vSpiWrite(((word)RegFifoAddrPtr<<8)+tmp);		//RxBaseAddr -> FiFoAddrPtr�?
 	}
  else
  	{
- 	if(CrcDisable)	
+ 	if(CrcDisable)
  		vSpiWrite(((word)RegDioMapping1<<8)+0x00);	//DIO0 PayloadReady / DIO1 FifoLevel / DIO2 FifoFull /DIO3 FifoEmpty
  	else
- 		vSpiWrite(((word)RegDioMapping1<<8)+0x40);	//DIO0 CrcOk  / DIO1 FifoLevel / DIO2 FifoFull /DIO3 FifoEmpty 	
+ 		vSpiWrite(((word)RegDioMapping1<<8)+0x40);	//DIO0 CrcOk  / DIO1 FifoLevel / DIO2 FifoFull /DIO3 FifoEmpty
  	}
 
  tmp = bSpiRead(RegOpMode);
@@ -574,7 +574,7 @@ void vGoStandby(void)
  tmp&= MODE_MASK;
  tmp |= RADIO_STANDBY;
  vSpiWrite(((word)RegOpMode<<8)+tmp);
-}	
+}
 
 /**********************************************************
 **Name:     vGoSleep
@@ -589,7 +589,7 @@ void vGoSleep(void)
  tmp&= MODE_MASK;
  tmp |= RADIO_SLEEP;
  vSpiWrite(((word)RegOpMode<<8)+tmp);
-}	
+}
 
 /**********************************************************
 **Name:     bSendMessage
@@ -606,15 +606,15 @@ byte bSendMessage(byte msg[], byte length)
  word bittime;
 
  if(Modulation==LORA)
- 	{ 
- 	vSpiWrite(((word)RegPayloadLength_LR<<8)+length);	
+ 	{
+ 	vSpiWrite(((word)RegPayloadLength_LR<<8)+length);
  	vSpiWrite(((word)RegDioMapping1<<8)+0x62);		//DIO0 TxDone / DIO1 CadDetected / DIO2 FhssChangeChannel /DIO3 PayloadCrcError
  	vSpiWrite(((word)RegIrqFlags<<8)+AllIrqMask);	//Clear All Interrupt
  	vSpiWrite(((word)RegIrqFlagsMask<<8)+(AllIrqMask&(~TxDoneMask)));	//just enable TxDone
- 	
+
  	tmp = bSpiRead(RegFifoTxBaseAddr);				//Read TxBaseAddr
  	vSpiWrite(((word)RegFifoAddrPtr<<8)+tmp);		//RxBaseAddr -> FiFoAddrPtr�?
- 	
+
  	vSpiBurstWrite(RegFifo, msg, length);
 	}
  else
@@ -625,12 +625,12 @@ byte bSendMessage(byte msg[], byte length)
  		vSpiWrite(((word)RegFifo<<8)+length);
  	vSpiBurstWrite(RegFifo, msg, length);
  	}
- 
+
  tmp = bSpiRead(RegOpMode);
  tmp&= MODE_MASK;
  tmp |= RADIO_TX;
  vSpiWrite(((word)RegOpMode<<8)+tmp);
- 
+
  if(Modulation==LORA)
  	{
  	overtime = PreambleLength + 5 + 8;	//unit: byte
@@ -647,13 +647,13 @@ byte bSendMessage(byte msg[], byte length)
  		case CR4_7:	bittime *= 7; break;
  		case CR4_8:	bittime *= 8; break;
  		}
- 	bittime >>= 2;		
+ 	bittime >>= 2;
  	if(RsOptimize)
  		bittime /= 10;
  	else
  		bittime /= 12;
  	overtime += bittime;			//unit: byte,  total = Payload + Preamble + Header
- 	
+
  	if(SFValue>=BWValue)			//unit: ms
  		overtime <<= (SFValue-BWValue);
  	else
@@ -662,19 +662,19 @@ byte bSendMessage(byte msg[], byte length)
  	for(bittime=0;bittime<5000;bittime++)	//about 500ms for overtime
  		{
 		if(DIO0_H())
-			break; 	
+			break;
 		delayMicroseconds(100);
  		}
- 	vSpiWrite(((word)RegIrqFlags<<8)+AllIrqMask);	//Clear All Interrupt 		
- 	vGoStandby();	
+ 	vSpiWrite(((word)RegIrqFlags<<8)+AllIrqMask);	//Clear All Interrupt
+ 	vGoStandby();
  	if(bittime>=5000)
  		return(false);
  	else
- 		return(true);	
+ 		return(true);
  	}
  else
  	{
- 
+
  	//等待发射完毕
  	bittime  = SymbolTime/1000;		//unit: us
  	overtime = SyncLength+PreambleLength+length;
@@ -685,16 +685,16 @@ byte bSendMessage(byte msg[], byte length)
  	overtime<<=3;						//8bit == 1byte
  	overtime*= bittime;
  	overtime/= 1000;					//unit: ms
- 	if(overtime==0) 
+ 	if(overtime==0)
  		overtime = 1;
  	delay(overtime);				//
  	for(tmp=0;tmp<100;tmp++)			//about 10ms for overtime
  		{
 		if(DIO0_H())
-			break; 	
+			break;
 		delayMicroseconds(100);
  		}
- 	vGoStandby();	
+ 	vGoStandby();
  	if(tmp>=100)
  		return(false);
  	else
@@ -711,21 +711,21 @@ byte bSendMessage(byte msg[], byte length)
 **********************************************************/
 byte bGetMessage(byte msg[])
 {
- byte length;	
+ byte length;
  if(DIO0_H())				//Receive CrcOk or PayloadReady
  	{
  	if(Modulation==LORA)
  		{
- 		byte addr;	
+ 		byte addr;
  		bSpiRead(RegIrqFlags);						//Read Interrupt Flag for do something
- 		
+
  		bSpiRead(RegPktSnrValue);
  		bSpiRead(RegRssiValue_LR);
  		bSpiRead(RegPktRssiValue);
- 		
- 		addr = bSpiRead(RegFifoRxCurrentAddr);			
+
+ 		addr = bSpiRead(RegFifoRxCurrentAddr);
  		vSpiWrite(((word)RegFifoAddrPtr<<8)+addr);
- 		length = bSpiRead(RegRxNbBytes);		
+ 		length = bSpiRead(RegRxNbBytes);
  		vSpiBurstRead(RegFifo, msg, length);
  		vSpiWrite(((word)RegIrqFlags<<8)+AllIrqMask);	//Clear All Interrupt
  		}
@@ -752,7 +752,7 @@ byte bGetMessage(byte msg[])
 **********************************************************/
 void vReset(void)
 {
- byte tmp;	
+ byte tmp;
  POROut();
  switch(COB)
  	{
@@ -770,26 +770,26 @@ void vReset(void)
 		ClrPOR();
 		delayMicroseconds(200);				//at least 100us for reset
 		SetPOR();
- 		break;		
+ 		break;
 	}
  PORIn();							//set POR for free
- delay(6);						//wait for ready	
+ delay(6);						//wait for ready
  ClrPOR();							//note: help for LowReset
- 
+
  tmp = bSpiRead(RegOpMode);
  tmp&= MODE_MASK;
  tmp |= RADIO_SLEEP;
  vSpiWrite(((word)RegOpMode<<8)+tmp);
 
- tmp &= 0x7F; 
+ tmp &= 0x7F;
  if(Modulation==LORA)
 	tmp |= 0x80;
  vSpiWrite(((word)RegOpMode<<8)+tmp);
-}	
+}
 
 /**********************************************************
 **Name:     bSelectBandwidth
-**Function: 
+**Function:
 **Input:    BandWidth
 **Output:   BandWidthValue
 **********************************************************/
@@ -798,12 +798,12 @@ byte bSelectBandwidth(byte rx_bw)
  if(rx_bw<=10)
 	return 0x15;						//10.4KHz 	Min
  else if(rx_bw<13)
- 	return 0x0D;						//12.5KHz	
- else if(rx_bw<16)	
+ 	return 0x0D;						//12.5KHz
+ else if(rx_bw<16)
  	return 0x05;						//15.6KHz
- else if(rx_bw<21)		
+ else if(rx_bw<21)
  	return 0x14;						//20.8KHz
- else if(rx_bw<=25)	
+ else if(rx_bw<=25)
  	return 0x0C;						//25.0KHz
  else if(rx_bw<32)
  	return 0x04;						//31.3KHz
@@ -831,26 +831,26 @@ byte bSelectBandwidth(byte rx_bw)
  	return 0x08;						//400KHz
  else
  	return 0x00;						//500KHz Max
-}	
+}
 
 /**********************************************************
 **Name:     bSelectRamping
-**Function: 
+**Function:
 **Input:    symbol time
 **Output:   ramping value
 **********************************************************/
 byte bSelectRamping(lword symbol)
 {
  lword SymbolRate;
- 
+
  SymbolRate = symbol/1000;			//ns->us
  SymbolRate = SymbolRate/4;			// 1/4 ramping
- 
- if(SymbolRate<=10)		
+
+ if(SymbolRate<=10)
  	return 0x0F;					//10us
- else if(SymbolRate<=12)			
+ else if(SymbolRate<=12)
  	return 0x0E;					//12us
- else if(SymbolRate<=15)			
+ else if(SymbolRate<=15)
  	return 0x0D;					//15us
  else if(SymbolRate<=20)
  	return 0x0C;					//20us
@@ -876,9 +876,6 @@ byte bSelectRamping(lword symbol)
 	return 0x02;					//1000us
  else if(SymbolRate<=2000)
  	return 0x01;					//2000us
- else 
+ else
  	return 0x00;
-}	
-	
-	
-	
+}

@@ -1,32 +1,32 @@
 /*
- * THE FOLLOWING FIRMWARE IS PROVIDED: 
- *  (1) "AS IS" WITH NO WARRANTY; 
+ * THE FOLLOWING FIRMWARE IS PROVIDED:
+ *  (1) "AS IS" WITH NO WARRANTY;
  *  (2) TO ENABLE ACCESS TO CODING INFORMATION TO GUIDE AND FACILITATE CUSTOMER.
  * CONSEQUENTLY, HopeRF SHALL NOT BE HELD LIABLE FOR ANY DIRECT, INDIRECT OR
  * CONSEQUENTIAL DAMAGES WITH RESPECT TO ANY CLAIMS ARISING FROM THE CONTENT
  * OF SUCH FIRMWARE AND/OR THE USE MADE BY CUSTOMERS OF THE CODING INFORMATION
  * CONTAINED HEREIN IN CONNECTION WITH THEIR PRODUCTS.
- * 
- * Copyright (C) HopeRF 
  *
- * website: www.HopeRF.com
- *          www.HopeRF.cn    
+ * Copyright (C) HopeRF
+ *
+ * website: www.ssla.co.uk
+ *          www.ssla.co.uk
  */
 
-/*! 
+/*!
  * file       HopeDuino_SPI.cpp
  * brief      for HopeRF's EVB to use Hardware SPI
  * hardware   HopeRF's EVB
- *            
  *
- * version    1.1
- * date       Jan 15 2015
- * author     QY Ruan
+ *
+ * version    1.3
+ * date       Feb 20 2019
+ * author     Nick
  */
 
 #include "HopeDuino_SPI.h"
 
-#define SPI_TYPE	0			//1: select hardware SPI, depond on platform 
+#define SPI_TYPE	0			//1: select hardware SPI, depond on platform
 								//0: select software GPIO simulate SPI,
 
 /**********************************************************
@@ -36,8 +36,8 @@
 **********************************************************/
 void vSpiInit(void)
 {
-//modify this function to migrate to other platform 
-#if SPI_TYPE		
+//modify this function to migrate to other platform
+#if SPI_TYPE
 	SPI.begin();
 #else
 	// can be optimized into single write if port wiring allows
@@ -57,11 +57,11 @@ void vSpiInit(void)
 **Name: 	bSpiTransfer
 **Func: 	Transfer One Byte by SPI
 **Input:
-**Output:  
+**Output:
 **********************************************************/
 byte bSpiTransfer(byte dat)
 {
-//modify this function to migrate to other platform 
+//modify this function to migrate to other platform
 #if SPI_TYPE
   return SPI.transfer(dat);
 #else
@@ -69,25 +69,25 @@ byte bSpiTransfer(byte dat)
 
   for(i = 0; i < 8; i++)
   {
-	  if (dat & 0x80) 
+	  if (dat & 0x80)
 		  SOFT_SPI_MOSI_HI();
-	  else 
+	  else
 		  SOFT_SPI_MOSI_LO();
-	  
+
 	  delayMicroseconds(1);
 	  SOFT_SPI_SCK_HI();
 	  delayMicroseconds(1);
-	  
+
 	  dat <<= 1;
-	   
-	  if (SOFT_SPI_MISO_READ()) 
+
+	  if (SOFT_SPI_MISO_READ())
 		  dat |= 0x01; // dat++
-	   
+
 	  delayMicroseconds(1);
 	  SOFT_SPI_SCK_LO();
 	  delayMicroseconds(1);
    }
-   
+
    return dat;
 #endif
 }
@@ -157,13 +157,13 @@ void vSpiBurstRead(byte addr, byte ptr[], byte length)
  		}
  	else
  		{
- 		byte i;	
+ 		byte i;
  		ClrnSS();
  		bSpiTransfer(addr);
  		for(i=0; i<length; i++)
  			ptr[i] = bSpiTransfer(0xFF);
  		SetnSS();
  		}
- 	}	
+ 	}
  return;
 }
