@@ -9,8 +9,8 @@
  *
  * Copyright (C) SSLA
  *
- * website: www.sla.co.uk
- *          www.sla.co.uk
+ * website: www.ssla.co.uk
+ *          www.ssla.co.uk
  */
 
 /*!
